@@ -1,0 +1,2918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSA Events | Caribbean Student Association</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+:root {
+  --wine: #4c233d;
+  --deep: #241624;
+  --cream: #faf7f3;
+  --gold: #d7a54b;
+  --rose: #f1dce5;
+  --text: #2b2030;
+  --muted: #8b7e89;
+  --border: #eadfe5;
+  --white: #fff;
+  --shadow: 0 8px 35px rgba(60,30,55,.07);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #d7a54b;
+  outline-offset: 3px;
+}
+
+.nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 17px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 43px;
+  height: 43px;
+  background: var(--wine);
+  color: white;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+}
+
+.brand strong {
+  display: block;
+  font-size: 16px;
+}
+
+.brand small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text);
+  border-radius: 9px;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.btn.primary {
+  background: var(--wine);
+  color: white;
+  border-color: var(--wine);
+}
+
+.btn.gold {
+  background: var(--gold);
+  color: #281b13;
+  border-color: var(--gold);
+}
+
+.btn.danger {
+  color: #a33146;
+  border-color: #e9cbd3;
+  background: #fff5f6;
+}
+
+.hero {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 22px;
+}
+
+.hero-inner {
+  background: linear-gradient(125deg, #291b29, #63384f);
+  border-radius: 24px;
+  padding: 48px 42px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-inner:after {
+  content: "✦  ✧  ✦";
+  position: absolute;
+  right: 35px;
+  top: 25px;
+  font-size: 50px;
+  opacity: .12;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  opacity: .7;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 5vw, 54px);
+  line-height: 1.12;
+  margin: 12px 0;
+  max-width: 580px;
+}
+
+.hero p {
+  max-width: 490px;
+  color: #eadde6;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 22px 50px;
+}
+
+.view-tabs {
+  display: flex;
+  gap: 5px;
+  background: #f0e8ed;
+  padding: 5px;
+  border-radius: 12px;
+  margin-bottom: 22px;
+  max-width: 570px;
+}
+
+.view-tabs button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: #897782;
+  padding: 12px 8px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.view-tabs button.active {
+  background: white;
+  color: var(--wine);
+  box-shadow: 0 2px 7px #0000000b;
+}
+
+.notice {
+  padding: 13px 16px;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.stat small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 27px;
+  margin: 8px 0 3px;
+}
+
+.stat span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 23px;
+  margin-bottom: 22px;
+  box-shadow: var(--shadow);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 23px;
+  margin: 0;
+}
+
+.section-header p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.calendar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 17px;
+}
+
+.calendar-top h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 23px;
+  margin: 0;
+}
+
+.month-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.month-buttons button {
+  width: 35px;
+  height: 35px;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+.weekday {
+  padding: 12px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.day {
+  min-height: 105px;
+  padding: 7px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: white;
+  min-width: 0;
+}
+
+.day.other { background: #fcfafb; }
+.day.other .day-number { color: #d6cbd3; }
+
+.day-number {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.day.today .day-number {
+  background: var(--wine);
+  color: white;
+}
+
+.event-chip {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-radius: 5px;
+  padding: 5px 6px;
+  margin: 3px 0;
+  font-size: 10px;
+  line-height: 1.3;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: #f0e1eb;
+  color: #5b2b49;
+}
+
+.event-chip.eboard {
+  background: #f9e8ba;
+  color: #6c4b12;
+}
+
+.event-chip.general {
+  background: #e3efe9;
+  color: #285746;
+}
+
+.event-chip.private {
+  background: #f9e8ba;
+  color: #6c4b12;
+}
+
+.event-chip.none {
+  background: #eee8f2;
+  color: #5e496d;
+}
+
+.event-chip.more {
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.event-card {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: white;
+}
+
+.event-date {
+  flex-shrink: 0;
+  width: 61px;
+  text-align: center;
+  background: #f6edf2;
+  border-radius: 10px;
+  padding: 9px 4px;
+}
+
+.event-date small {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.event-date strong {
+  display: block;
+  font-size: 25px;
+  line-height: 1.25;
+  color: var(--wine);
+}
+
+.event-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.event-info h3 {
+  font-size: 15px;
+  margin: 7px 0;
+}
+
+.event-info p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 5px 0;
+  white-space: pre-wrap;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  background: #eee8f2;
+  color: #60486b;
+}
+
+.tag.eboard {
+  background: #f9e8ba;
+  color: #6c4b12;
+}
+
+.tag.general {
+  background: #e3efe9;
+  color: #285746;
+}
+
+.event-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.event-actions button {
+  padding: 7px 9px;
+  border-radius: 7px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text);
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 25px 10px;
+  font-size: 13px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #24162488;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 50;
+  overflow-y: auto;
+}
+
+.modal {
+  background: white;
+  border-radius: 18px;
+  padding: 26px;
+  width: 100%;
+  max-width: 570px;
+  box-shadow: 0 20px 70px #0002;
+}
+
+.modal h2 {
+  font-family: 'Playfair Display', serif;
+  margin: 0 0 7px;
+}
+
+.modal p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.form-group { margin-bottom: 14px; }
+.form-group.full { grid-column: 1 / -1; }
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px;
+  background: #fdfafb;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 85px;
+}
+
+.form-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.close-button {
+  float: right;
+  border: 0;
+  background: #f5edf2;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  color: var(--wine);
+}
+
+.hidden { display: none !important; }
+
+.login-box {
+  max-width: 400px;
+  margin: 25px auto;
+}
+
+.login-box.locked {
+  text-align: center;
+}
+
+.lock-icon {
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+.login-box h2 {
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 7px;
+}
+
+.footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  padding: 25px;
+}
+
+@media(max-width:650px) {
+  .hero-inner { padding: 32px 24px; }
+  .stats { grid-template-columns: 1fr; }
+  .stat { padding: 15px; }
+  .stat strong { font-size: 23px; }
+  .section { padding: 15px; }
+  .day { min-height: 65px; padding: 4px; }
+  .event-chip { font-size: 8px; padding: 3px; }
+  .weekday { font-size: 9px; padding: 9px 2px; }
+  .day-number { width: 22px; height: 22px; font-size: 11px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full { grid-column: auto; }
+  .event-card { gap: 10px; }
+  .event-date { width: 52px; }
+  .event-date strong { font-size: 21px; }
+  .event-actions { flex-direction: column; }
+  .event-actions button { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="brand">
+    <div class="logo">🌴</div>
+    <div>
+      <strong>Caribbean Student Association</strong>
+      <small>Winston-Salem State University</small>
+    </div>
+  </div>
+
+  <div class="nav-actions">
+    <button class="btn" id="loginBtn">Coordinator Login</button>
+    <button class="btn primary hidden" id="addTopBtn">+ Add Event</button>
+    <button class="btn hidden" id="logoutBtn">Lock Mode</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Culture · Community · Connection</div>
+
+    <h1>Where Caribbean culture comes together.</h1>
+
+    <p>
+      Discover upcoming CSA events, cultural celebrations,
+      community service, and everything we have planned.
+    </p>
+
+    <div class="hero-buttons">
+      <button class="btn gold" id="heroCalendar">
+        Explore Calendar ↓
+      </button>
+
+      <button class="btn" id="heroLogin">
+        Event Coordinator →
+      </button>
+    </div>
+  </div>
+</section>
+
+<main class="container">
+
+  <div class="view-tabs" role="tablist">
+
+    <button
+      class="active"
+      data-view="general"
+    >
+      GENERAL MEMBERS
+    </button>
+
+    <button data-view="eboard">
+      🔒 E-BOARD MEMBERS
+    </button>
+
+    <button data-view="coordinator">
+      COORDINATOR
+    </button>
+
+  </div>
+
+  <div class="notice" id="viewNotice">
+    👥 General member view · Public events and activities
+  </div>
+
+  <!-- LOGIN PANEL -->
+  <div class="login-box section hidden" id="loginPanel">
+
+    <div id="loginIcon" class="lock-icon">🔐</div>
+
+    <h2 id="loginTitle">Event Coordinator Access</h2>
+
+    <p id="loginDescription">
+      Enter the coordinator passcode to unlock event management.
+    </p>
+
+    <form id="loginForm">
+
+      <div class="form-group">
+        <label for="password">Passcode</label>
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter passcode"
+          required
+        >
+      </div>
+
+      <button class="btn primary" type="submit" id="loginSubmit">
+        Unlock Edit Mode
+      </button>
+
+      <p id="loginMessage"></p>
+
+    </form>
+
+  </div>
+
+  <div id="siteContent">
+
+    <div class="stats">
+
+      <div class="stat">
+        <small>Upcoming Events</small>
+        <strong id="statCount">0</strong>
+        <span>Visible events</span>
+      </div>
+
+      <div class="stat">
+        <small>Next Event</small>
+        <strong id="statNext">—</strong>
+        <span id="statNextDate">—</span>
+      </div>
+
+      <div class="stat">
+        <small>Current View</small>
+        <strong id="statView">Public</strong>
+        <span id="statViewDesc">General member access</span>
+      </div>
+
+    </div>
+
+    <!-- CALENDAR -->
+    <section class="section" id="calendarSection">
+
+      <div class="calendar-top">
+
+        <div>
+          <div
+            class="eyebrow"
+            style="color:var(--muted)"
+          >
+            EVENT CALENDAR
+          </div>
+
+          <h2 id="monthTitle">
+            September 2026
+          </h2>
+        </div>
+
+        <div class="month-buttons">
+          <button id="prevMonth">‹</button>
+          <button id="nextMonth">›</button>
+        </div>
+
+      </div>
+
+      <div class="calendar" id="calendar"></div>
+
+      <p style="font-size:11px;color:var(--muted);margin-top:14px">
+        Tap an event for details.
+        Coordinator mode allows you to add and edit events.
+      </p>
+
+    </section>
+
+    <!-- UPCOMING EVENTS -->
+    <section class="section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Upcoming Events</h2>
+          <p>Stay connected with what's happening in CSA.</p>
+        </div>
+
+        <span class="tag" id="eventCountLabel">
+          0 EVENTS
+        </span>
+
+      </div>
+
+      <div class="event-list" id="eventList"></div>
+
+    </section>
+
+    <!-- COORDINATOR TOOLS -->
+    <section class="section hidden" id="coordinatorTools">
+
+      <div class="section-header">
+
+        <div>
+          <div
+            class="eyebrow"
+            style="color:var(--muted)"
+          >
+            MANAGEMENT
+          </div>
+
+          <h2>Event Coordinator</h2>
+
+          <p>
+            Manage your CSA calendar.
+          </p>
+        </div>
+
+        <span class="tag general">
+          EDIT MODE
+        </span>
+
+      </div>
+
+      <div class="notice">
+        Changes are saved in this browser.
+        Export your calendar to keep a backup.
+      </div>
+
+      <div class="nav-actions">
+
+        <button class="btn primary" id="addEventBtn">
+          + Add Event
+        </button>
+
+        <button class="btn" id="exportBtn">
+          Export Calendar (.ics)
+        </button>
+
+        <button class="btn" id="backupBtn">
+          Backup Events (.json)
+        </button>
+
+        <button class="btn" id="importBtn">
+          Import Backup
+        </button>
+
+        <input
+          type="file"
+          id="importFile"
+          accept=".json"
+          class="hidden"
+        >
+
+      </div>
+
+    </section>
+
+  </div>
+</main>
+
+<footer class="footer">
+  Caribbean Student Association · WSSU<br>
+  Culture • Community • Connection
+</footer>
+
+<!-- EVENT EDITOR -->
+<div class="modal-backdrop hidden" id="eventModal">
+
+  <div class="modal">
+
+    <button class="close-button" id="closeModal">
+      ✕
+    </button>
+
+    <h2 id="modalTitle">
+      Add Event
+    </h2>
+
+    <p>
+      Create or edit an event for the CSA calendar.
+    </p>
+
+    <form id="eventForm">
+
+      <div class="form-grid">
+
+        <div class="form-group full">
+
+          <label for="eventName">
+            Event Name *
+          </label>
+
+          <input
+            id="eventName"
+            required
+            placeholder="e.g. General Body Meeting"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="eventDate">
+            Date *
+          </label>
+
+          <input
+            type="date"
+            id="eventDate"
+            required
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="eventTime">
+            Time
+          </label>
+
+          <input
+            id="eventTime"
+            placeholder="6:00 PM"
+          >
+
+        </div>
+
+        <div class="form-group full">
+
+          <label for="eventLocation">
+            Location
+          </label>
+
+          <input
+            id="eventLocation"
+            placeholder="Location or TBD"
+          >
+
+        </div>
+
+        <div class="form-group full">
+
+          <label for="eventDetails">
+            Description / Details
+          </label>
+
+          <textarea
+            id="eventDetails"
+            placeholder="Event information, activities, notes..."
+          ></textarea>
+
+        </div>
+
+        <!-- VISIBILITY TAG -->
+        <div class="form-group">
+
+          <label for="eventTag">
+            Who can see this event? *
+          </label>
+
+          <select id="eventTag" required>
+
+            <option value="general">
+              General Body
+            </option>
+
+            <option value="eboard">
+              E-Board
+            </option>
+
+            <option value="all">
+              Everyone / No Tag
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="eventCategory">
+            Category
+          </label>
+
+          <select id="eventCategory">
+
+            <option value="general">
+              General Event
+            </option>
+
+            <option value="meeting">
+              Meeting
+            </option>
+
+            <option value="fundraising">
+              Fundraising
+            </option>
+
+            <option value="service">
+              Community Service
+            </option>
+
+            <option value="csa">
+              CSA Week
+            </option>
+
+            <option value="bonding">
+              Bonding
+            </option>
+
+            <option value="photoshoot">
+              Photoshoot
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div class="notice">
+
+        <strong>Visibility:</strong>
+
+        <span id="visibilityExplanation">
+          General Body events are visible to everyone.
+        </span>
+
+      </div>
+
+      <div class="form-buttons">
+
+        <button
+          class="btn primary"
+          type="submit"
+        >
+          Save Event
+        </button>
+
+        <button
+          class="btn"
+          type="button"
+          id="cancelModal"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="btn danger hidden"
+          type="button"
+          id="deleteEvent"
+        >
+          Delete Event
+        </button>
+
+      </div>
+
+      <p id="formMessage"></p>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+
+/* ============================================
+   CSA EVENT WEBSITE
+   ============================================ */
+
+/* PASSWORDS */
+const COORDINATOR_PASSCODE = "CSAevents";
+const EBOARD_PASSCODE = "CSAeboard";
+
+const STORAGE_KEY = "csa_events_2026_2027";
+
+/*
+  Visibility:
+  
+  general = General Body + E-Board + Coordinator
+  eboard  = E-Board + Coordinator only
+  all     = Everyone
+*/
+
+/*
+  Access modes:
+  
+  general     = Public
+  eboard      = E-Board members
+  coordinator = Event Coordinator
+*/
+
+let mode = "general";
+
+let coordinatorUnlocked = false;
+let eboardUnlocked = false;
+
+let editingId = null;
+let nextId = 100;
+
+let viewDate = new Date(2026, 8, 1);
+
+let loginType = "coordinator";
+
+const $ = id => document.getElementById(id);
+
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
+
+/* ============================================
+   STARTING EVENTS
+   ============================================ */
+
+const originalEvents = [
+
+  {
+    id: 1,
+    name: "Interest Meeting",
+    date: "2026-09-24",
+    time: "6:00 PM",
+    location: "TBD",
+    details: "Administration theme",
+    tag: "general",
+    category: "meeting"
+  },
+
+  {
+    id: 2,
+    name: "Photo Shoot",
+    date: "2026-09-28",
+    time: "6:00 PM",
+    location: "TBD",
+    details:
+      "Rep Ya Flag • Streetwear with pops of your flag colors • Dancehall aesthetic • Photographers: Tre, Zay, David",
+    tag: "general",
+    category: "photoshoot"
+  },
+
+  {
+    id: 3,
+    name: "E-Board Photoshoot",
+    date: "2026-09-28",
+    time: "6:00 PM",
+    location: "TBD",
+    details:
+      "E-board photoshoot • Rep Ya Flag • Dancehall aesthetic",
+    tag: "eboard",
+    category: "photoshoot"
+  },
+
+  {
+    id: 4,
+    name: "General Body Meeting / Bonding",
+    date: "2026-10-01",
+    time: "6:00 PM",
+    location: "TBD",
+    details:
+      "General body meeting and bonding",
+    tag: "general",
+    category: "meeting"
+  },
+
+  {
+    id: 5,
+    name: "E-Board Meeting",
+    date: "2026-10-02",
+    time: "6:00 PM",
+    location: "Virtual",
+    details:
+      "Community service and fundraising discussion",
+    tag: "eboard",
+    category: "meeting"
+  },
+
+  {
+    id: 6,
+    name: "E-Board Bonding Event",
+    date: "2026-10-06",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Drunk/Crossed Bowling • Rams Game Night",
+    tag: "eboard",
+    category: "bonding"
+  },
+
+  {
+    id: 7,
+    name: "Membership Dues Due",
+    date: "2026-10-13",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Membership dues are due",
+    tag: "general",
+    category: "general"
+  },
+
+  {
+    id: 8,
+    name: "CSA Week: Dance Workshop",
+    date: "2026-10-19",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Caribbean dance workshop",
+    tag: "general",
+    category: "csa"
+  },
+
+  {
+    id: 9,
+    name: "CSA Week: Karaoke Night",
+    date: "2026-10-20",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Karaoke night",
+    tag: "general",
+    category: "csa"
+  },
+
+  {
+    id: 10,
+    name: "CSA Week: Raffle Prizes",
+    date: "2026-10-21",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Island-themed goods basket and smaller prizes",
+    tag: "general",
+    category: "fundraising"
+  },
+
+  {
+    id: 11,
+    name: "CSA Week: Potluck",
+    date: "2026-10-22",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Caribbean potluck",
+    tag: "general",
+    category: "csa"
+  },
+
+  {
+    id: 12,
+    name: "CSA Week: Sip & Dance",
+    date: "2026-10-23",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Mocktails and potentially Caribbean games",
+    tag: "general",
+    category: "csa"
+  },
+
+  {
+    id: 13,
+    name: "Trunk or Treat",
+    date: "2026-10-28",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Time TBD",
+    tag: "general",
+    category: "service"
+  },
+
+  {
+    id: 14,
+    name: "Toy Workshop",
+    date: "2026-11-02",
+    time: "TBD",
+    location: "TBD",
+    details:
+      "Beginning of November • Date TBD",
+    tag: "general",
+    category: "service"
+  },
+
+  {
+    id: 15,
+    name: "Coronation",
+    date: "2026-11-05",
+    time: "7:00 PM",
+    location: "TBD",
+    details:
+      "Coronation",
+    tag: "general",
+    category: "csa"
+  }
+
+];
+
+let events = loadEvents();
+
+/* ============================================
+   LOAD / SAVE
+   ============================================ */
+
+function loadEvents() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(STORAGE_KEY);
+
+    if (saved) {
+
+      const parsed = JSON.parse(saved);
+
+      if (Array.isArray(parsed)) {
+
+        nextId =
+          Math.max(
+            100,
+            ...parsed.map(
+              e => Number(e.id) || 0
+            ) + 1
+          );
+
+        return parsed;
+      }
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Could not load events:",
+      error
+    );
+
+  }
+
+  return originalEvents.map(e => ({...e}));
+}
+
+function saveEvents() {
+
+  try {
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(events)
+    );
+
+  } catch (error) {
+
+    console.warn(
+      "Could not save events:",
+      error
+    );
+
+  }
+
+}
+
+/* ============================================
+   HELPERS
+   ============================================ */
+
+function esc(value) {
+
+  return String(value ?? "")
+    .replace(/[&<>"']/g, c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[c]));
+
+}
+
+function parseDate(str) {
+
+  const [y, m, d] =
+    str.split("-").map(Number);
+
+  return new Date(y, m - 1, d);
+
+}
+
+function formatDate(str) {
+
+  return parseDate(str)
+    .toLocaleDateString(
+      "en-US",
+      {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      }
+    );
+
+}
+
+function formatDateParts(str) {
+
+  const d = parseDate(str);
+
+  return {
+
+    month:
+      d.toLocaleDateString(
+        "en-US",
+        {month: "short"}
+      ),
+
+    day: d.getDate(),
+
+    weekday:
+      d.toLocaleDateString(
+        "en-US",
+        {weekday: "short"}
+      )
+
+  };
+
+}
+
+/* ============================================
+   EVENT VISIBILITY
+   ============================================ */
+
+function visible(e) {
+
+  /* General members cannot see E-Board events */
+
+  if (mode === "general") {
+
+    return e.tag !== "eboard";
+
+  }
+
+  /*
+    E-Board members and Coordinator
+    can see everything.
+  */
+
+  if (
+    mode === "eboard" ||
+    mode === "coordinator"
+  ) {
+
+    return true;
+
+  }
+
+  return false;
+
+}
+
+function sortedEvents() {
+
+  return events
+    .filter(visible)
+    .sort(
+      (a, b) =>
+        a.date.localeCompare(b.date) ||
+        a.name.localeCompare(b.name)
+    );
+
+}
+
+function tagLabel(tag) {
+
+  if (tag === "eboard")
+    return "E-Board";
+
+  if (tag === "general")
+    return "General Body";
+
+  return "Everyone";
+
+}
+
+function tagClass(tag) {
+
+  return tag === "eboard"
+    ? "eboard"
+    : tag === "general"
+    ? "general"
+    : "none";
+
+}
+
+function categoryLabel(category) {
+
+  const labels = {
+
+    general: "Event",
+    meeting: "Meeting",
+    fundraising: "Fundraising",
+    service: "Community Service",
+    csa: "CSA Week",
+    bonding: "Bonding",
+    photoshoot: "Photoshoot"
+
+  };
+
+  return labels[category] || "Event";
+
+}
+
+/* ============================================
+   EVENT CARD
+   ============================================ */
+
+function eventCard(e) {
+
+  const p = formatDateParts(e.date);
+
+  return `
+
+    <div class="event-card">
+
+      <div class="event-date">
+
+        <small>
+          ${esc(p.month)}
+        </small>
+
+        <strong>
+          ${p.day}
+        </strong>
+
+        <small>
+          ${esc(p.weekday)}
+        </small>
+
+      </div>
+
+      <div class="event-info">
+
+        <span class="tag ${tagClass(e.tag)}">
+          ${esc(tagLabel(e.tag))}
+        </span>
+
+        <h3>
+          ${esc(e.name)}
+        </h3>
+
+        <p>
+          ◷ ${esc(e.time || "TBD")}
+          ·
+          ${esc(e.location || "TBD")}
+        </p>
+
+        ${
+          e.details
+            ? `<p>${esc(e.details)}</p>`
+            : ""
+        }
+
+        ${
+          coordinatorUnlocked
+            ? `
+              <div class="event-actions">
+
+                <button data-edit="${e.id}">
+                  Edit Event
+                </button>
+
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+/* ============================================
+   RENDER
+   ============================================ */
+
+function render() {
+
+  const list = sortedEvents();
+
+  $("statCount").textContent =
+    list.length;
+
+  $("eventCountLabel").textContent =
+    list.length + " EVENTS";
+
+  const now = new Date();
+
+  now.setHours(0, 0, 0, 0);
+
+  const next =
+    list.find(
+      e => parseDate(e.date) >= now
+    ) || list[0];
+
+  $("statNext").textContent =
+    next ? next.name : "—";
+
+  $("statNextDate").textContent =
+    next
+      ? formatDate(next.date)
+      : "No events";
+
+  $("statView").textContent =
+    mode === "general"
+      ? "Public"
+      : mode === "eboard"
+      ? "E-Board"
+      : "Coordinator";
+
+  $("statViewDesc").textContent =
+    mode === "general"
+      ? "General member access"
+      : mode === "eboard"
+      ? "All CSA events"
+      : "Edit access";
+
+  $("viewNotice").textContent =
+    mode === "general"
+
+      ? "👥 General member view · E-Board events are hidden."
+
+      : mode === "eboard"
+
+      ? "🔒 E-Board view · All events, including private planning."
+
+      : "✎ Coordinator view · Full access and event management.";
+
+  $("coordinatorTools")
+    .classList.toggle(
+      "hidden",
+      !coordinatorUnlocked
+    );
+
+  $("addTopBtn")
+    .classList.toggle(
+      "hidden",
+      !coordinatorUnlocked
+    );
+
+  $("logoutBtn")
+    .classList.toggle(
+      "hidden",
+      !coordinatorUnlocked &&
+      !eboardUnlocked
+    );
+
+  $("loginBtn")
+    .classList.toggle(
+      "hidden",
+      coordinatorUnlocked
+    );
+
+  $("eventList").innerHTML =
+    list.length
+
+      ? list.map(eventCard).join("")
+
+      : `
+        <div class="empty">
+          No events scheduled yet.
+        </div>
+      `;
+
+  $("eventList")
+    .querySelectorAll("[data-edit]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          openEditor(
+            events.find(
+              e =>
+                e.id ===
+                Number(
+                  button.dataset.edit
+                )
+            )
+          );
+
+        }
+      );
+
+    });
+
+  renderCalendar();
+
+}
+
+/* ============================================
+   CALENDAR
+   ============================================ */
+
+function renderCalendar() {
+
+  $("monthTitle").textContent =
+    monthNames[
+      viewDate.getMonth()
+    ] +
+    " " +
+    viewDate.getFullYear();
+
+  const first =
+    new Date(
+      viewDate.getFullYear(),
+      viewDate.getMonth(),
+      1
+    );
+
+  const start =
+    new Date(
+      viewDate.getFullYear(),
+      viewDate.getMonth(),
+      1 - first.getDay()
+    );
+
+  let html = "";
+
+  [
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat"
+  ].forEach(day => {
+
+    html += `
+      <div class="weekday">
+        ${day}
+      </div>
+    `;
+
+  });
+
+  const today = new Date();
+
+  for (let i = 0; i < 42; i++) {
+
+    const d =
+      new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate() + i
+      );
+
+    const ds =
+      d.getFullYear() +
+      "-" +
+      String(
+        d.getMonth() + 1
+      ).padStart(2, "0") +
+      "-" +
+      String(
+        d.getDate()
+      ).padStart(2, "0");
+
+    const dayEvents =
+      events.filter(
+        e =>
+          e.date === ds &&
+          visible(e)
+      );
+
+    const other =
+      d.getMonth() !==
+      viewDate.getMonth();
+
+    const isToday =
+      d.toDateString() ===
+      today.toDateString();
+
+    html += `
+
+      <div class="day
+        ${other ? "other" : ""}
+        ${isToday ? "today" : ""}
+      ">
+
+        <button
+          class="calday"
+          data-date="${ds}"
+          style="
+            border:0;
+            background:transparent;
+            color:inherit;
+            width:100%;
+            text-align:left;
+            padding:0;
+            cursor:pointer
+          "
+          aria-label="${esc(formatDate(ds))}"
+        >
+
+          <span class="day-number">
+            ${d.getDate()}
+          </span>
+
+        </button>
+
+    `;
+
+    dayEvents
+      .slice(0, 3)
+      .forEach(e => {
+
+        html += `
+
+          <button
+            class="event-chip ${tagClass(e.tag)}"
+            data-calendar-event="${e.id}"
+            title="${esc(e.name)}"
+          >
+            ${esc(e.name)}
+          </button>
+
+        `;
+
+      });
+
+    if (dayEvents.length > 3) {
+
+      html += `
+
+        <div class="event-chip more">
+          +${dayEvents.length - 3} more
+        </div>
+
+      `;
+
+    }
+
+    html += `</div>`;
+
+  }
+
+  $("calendar").innerHTML = html;
+
+  $("calendar")
+    .querySelectorAll("[data-date]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          if (coordinatorUnlocked) {
+
+            openEditor(
+              null,
+              button.dataset.date
+            );
+
+          }
+
+        }
+      );
+
+    });
+
+  $("calendar")
+    .querySelectorAll(
+      "[data-calendar-event]"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        event => {
+
+          event.stopPropagation();
+
+          const e =
+            events.find(
+              x =>
+                x.id ===
+                Number(
+                  button.dataset
+                    .calendarEvent
+                )
+            );
+
+          if (coordinatorUnlocked) {
+
+            openEditor(e);
+
+          } else {
+
+            showEventDetails(e);
+
+          }
+
+        }
+      );
+
+    });
+
+}
+
+/* ============================================
+   EVENT DETAILS
+   ============================================ */
+
+function showEventDetails(e) {
+
+  if (!e) return;
+
+  alert(
+
+    e.name +
+    "\n\n" +
+
+    formatDate(e.date) +
+    " · " +
+    (e.time || "TBD") +
+
+    "\n" +
+
+    (e.location || "TBD") +
+
+    "\n\n" +
+
+    (
+      e.details ||
+      "No additional details."
+    )
+
+  );
+
+}
+
+/* ============================================
+   VIEW SWITCHING
+   ============================================ */
+
+function switchView(newMode) {
+
+  /*
+    Coordinator requires coordinator password.
+  */
+
+  if (
+    newMode === "coordinator" &&
+    !coordinatorUnlocked
+  ) {
+
+    loginType = "coordinator";
+
+    showLoginPanel();
+
+    return;
+
+  }
+
+  /*
+    E-Board requires E-Board password.
+  */
+
+  if (
+    newMode === "eboard" &&
+    !eboardUnlocked &&
+    !coordinatorUnlocked
+  ) {
+
+    loginType = "eboard";
+
+    showLoginPanel();
+
+    return;
+
+  }
+
+  mode = newMode;
+
+  $("loginPanel")
+    .classList.add("hidden");
+
+  $("siteContent")
+    .classList.remove("hidden");
+
+  document
+    .querySelectorAll("[data-view]")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.view === newMode
+      );
+
+    });
+
+  render();
+
+}
+
+/* ============================================
+   SHOW LOGIN PANEL
+   ============================================ */
+
+function showLoginPanel() {
+
+  $("loginPanel")
+    .classList.remove("hidden");
+
+  $("siteContent")
+    .classList.add("hidden");
+
+  $("password").value = "";
+
+  $("loginMessage").textContent = "";
+
+  if (loginType === "eboard") {
+
+    $("loginIcon").textContent = "🔒";
+
+    $("loginTitle").textContent =
+      "E-Board Access";
+
+    $("loginDescription").textContent =
+      "Enter the E-Board passcode to view private CSA planning and events.";
+
+    $("loginSubmit").textContent =
+      "Unlock E-Board View";
+
+    $("viewNotice").textContent =
+      "🔒 E-Board access · Enter the E-Board passcode to continue.";
+
+  } else {
+
+    $("loginIcon").textContent = "🔐";
+
+    $("loginTitle").textContent =
+      "Event Coordinator Access";
+
+    $("loginDescription").textContent =
+      "Enter the coordinator passcode to unlock event management.";
+
+    $("loginSubmit").textContent =
+      "Unlock Edit Mode";
+
+    $("viewNotice").textContent =
+      "🔑 Coordinator access · Enter your passcode to unlock editing.";
+
+  }
+
+}
+
+/* ============================================
+   VIEW TAB BUTTONS
+   ============================================ */
+
+document
+  .querySelectorAll("[data-view]")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        switchView(
+          button.dataset.view
+        );
+
+      }
+    );
+
+  });
+
+/* ============================================
+   HERO BUTTONS
+   ============================================ */
+
+$("heroCalendar")
+  .addEventListener(
+    "click",
+    () => {
+
+      $("calendarSection")
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+    }
+  );
+
+$("heroLogin")
+  .addEventListener(
+    "click",
+    () => {
+
+      switchView("coordinator");
+
+    }
+  );
+
+$("loginBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      switchView("coordinator");
+
+    }
+  );
+
+/* ============================================
+   LOGIN
+   ============================================ */
+
+$("loginForm")
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      const entered =
+        $("password").value;
+
+      /*
+        E-BOARD LOGIN
+      */
+
+      if (
+        loginType === "eboard" &&
+        entered === EBOARD_PASSCODE
+      ) {
+
+        eboardUnlocked = true;
+        mode = "eboard";
+
+        $("password").value = "";
+
+        $("loginPanel")
+          .classList.add("hidden");
+
+        $("siteContent")
+          .classList.remove("hidden");
+
+        document
+          .querySelectorAll("[data-view]")
+          .forEach(button => {
+
+            button.classList.toggle(
+              "active",
+              button.dataset.view ===
+              "eboard"
+            );
+
+          });
+
+        render();
+
+        return;
+
+      }
+
+      /*
+        COORDINATOR LOGIN
+      */
+
+      if (
+        loginType === "coordinator" &&
+        entered === COORDINATOR_PASSCODE
+      ) {
+
+        coordinatorUnlocked = true;
+
+        mode = "coordinator";
+
+        $("password").value = "";
+
+        $("loginMessage").textContent = "";
+
+        $("loginPanel")
+          .classList.add("hidden");
+
+        $("siteContent")
+          .classList.remove("hidden");
+
+        document
+          .querySelectorAll("[data-view]")
+          .forEach(button => {
+
+            button.classList.toggle(
+              "active",
+              button.dataset.view ===
+              "coordinator"
+            );
+
+          });
+
+        render();
+
+        return;
+
+      }
+
+      $("loginMessage").textContent =
+        "Incorrect passcode. Please try again.";
+
+    }
+  );
+
+/* ============================================
+   LOGOUT / LOCK
+   ============================================ */
+
+$("logoutBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      coordinatorUnlocked = false;
+      eboardUnlocked = false;
+
+      editingId = null;
+
+      closeEditor();
+
+      mode = "general";
+
+      document
+        .querySelectorAll("[data-view]")
+        .forEach(button => {
+
+          button.classList.toggle(
+            "active",
+            button.dataset.view ===
+            "general"
+          );
+
+        });
+
+      $("loginPanel")
+        .classList.add("hidden");
+
+      $("siteContent")
+        .classList.remove("hidden");
+
+      render();
+
+    }
+  );
+
+/* ============================================
+   CALENDAR NAVIGATION
+   ============================================ */
+
+$("prevMonth")
+  .addEventListener(
+    "click",
+    () => {
+
+      viewDate =
+        new Date(
+          viewDate.getFullYear(),
+          viewDate.getMonth() - 1,
+          1
+        );
+
+      renderCalendar();
+
+    }
+  );
+
+$("nextMonth")
+  .addEventListener(
+    "click",
+    () => {
+
+      viewDate =
+        new Date(
+          viewDate.getFullYear(),
+          viewDate.getMonth() + 1,
+          1
+        );
+
+      renderCalendar();
+
+    }
+  );
+
+/* ============================================
+   EVENT EDITOR
+   ============================================ */
+
+function openEditor(
+  e,
+  selectedDate
+) {
+
+  if (!coordinatorUnlocked)
+    return;
+
+  editingId =
+    e ? e.id : null;
+
+  $("modalTitle").textContent =
+    e ? "Edit Event" : "Add Event";
+
+  $("eventName").value =
+    e ? e.name : "";
+
+  $("eventDate").value =
+    e
+      ? e.date
+      : selectedDate ||
+        formatInputDate(viewDate);
+
+  $("eventTime").value =
+    e ? e.time : "";
+
+  $("eventLocation").value =
+    e ? e.location : "";
+
+  $("eventDetails").value =
+    e ? e.details : "";
+
+  $("eventTag").value =
+    e ? e.tag : "general";
+
+  $("eventCategory").value =
+    e ? e.category : "general";
+
+  $("deleteEvent")
+    .classList.toggle(
+      "hidden",
+      !e
+    );
+
+  $("formMessage").textContent = "";
+
+  updateVisibilityExplanation();
+
+  $("eventModal")
+    .classList.remove("hidden");
+
+  $("eventName").focus();
+
+}
+
+function formatInputDate(d) {
+
+  return d.getFullYear() +
+    "-" +
+    String(
+      d.getMonth() + 1
+    ).padStart(2, "0") +
+    "-" +
+    String(
+      d.getDate()
+    ).padStart(2, "0");
+
+}
+
+function closeEditor() {
+
+  $("eventModal")
+    .classList.add("hidden");
+
+  editingId = null;
+
+}
+
+$("addEventBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      openEditor(
+        null,
+        formatInputDate(viewDate)
+      );
+
+    }
+  );
+
+$("addTopBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      openEditor(
+        null,
+        formatInputDate(viewDate)
+      );
+
+    }
+  );
+
+$("closeModal")
+  .addEventListener(
+    "click",
+    closeEditor
+  );
+
+$("cancelModal")
+  .addEventListener(
+    "click",
+    closeEditor
+  );
+
+$("eventTag")
+  .addEventListener(
+    "change",
+    updateVisibilityExplanation
+  );
+
+function updateVisibilityExplanation() {
+
+  const tag =
+    $("eventTag").value;
+
+  $("visibilityExplanation")
+    .textContent =
+
+    tag === "eboard"
+
+      ? "Only E-Board members and the Event Coordinator can see this event."
+
+      : tag === "general"
+
+      ? "General Body and E-Board members can see this event."
+
+      : "Everyone can see this event.";
+
+}
+
+/* ============================================
+   SAVE EVENT
+   ============================================ */
+
+$("eventForm")
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      if (!coordinatorUnlocked)
+        return;
+
+      const data = {
+
+        name:
+          $("eventName")
+            .value
+            .trim(),
+
+        date:
+          $("eventDate")
+            .value,
+
+        time:
+          $("eventTime")
+            .value
+            .trim() ||
+          "TBD",
+
+        location:
+          $("eventLocation")
+            .value
+            .trim() ||
+          "TBD",
+
+        details:
+          $("eventDetails")
+            .value
+            .trim(),
+
+        tag:
+          $("eventTag")
+            .value,
+
+        category:
+          $("eventCategory")
+            .value
+
+      };
+
+      if (
+        !data.name ||
+        !data.date
+      ) return;
+
+      if (editingId === null) {
+
+        data.id =
+          nextId++;
+
+        events.push(data);
+
+      } else {
+
+        const index =
+          events.findIndex(
+            e =>
+              e.id === editingId
+          );
+
+        if (index !== -1) {
+
+          events[index] = {
+
+            id: editingId,
+            ...data
+
+          };
+
+        }
+
+      }
+
+      saveEvents();
+
+      const d =
+        parseDate(data.date);
+
+      viewDate =
+        new Date(
+          d.getFullYear(),
+          d.getMonth(),
+          1
+        );
+
+      closeEditor();
+
+      render();
+
+    }
+  );
+
+/* ============================================
+   DELETE EVENT
+   ============================================ */
+
+$("deleteEvent")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (
+        editingId === null ||
+        !coordinatorUnlocked
+      ) return;
+
+      const event =
+        events.find(
+          e =>
+            e.id === editingId
+        );
+
+      if (!event) return;
+
+      if (
+        !confirm(
+          "Delete " +
+          event.name +
+          "?"
+        )
+      ) return;
+
+      events =
+        events.filter(
+          e =>
+            e.id !== editingId
+        );
+
+      saveEvents();
+
+      closeEditor();
+
+      render();
+
+    }
+  );
+
+/* ============================================
+   EXPORT CALENDAR
+   ============================================ */
+
+function icsDate(
+  dateString,
+  timeString
+) {
+
+  const match =
+    (timeString || "")
+      .match(
+        /(\d{1,2}):(\d{2})\s*(AM|PM)?/i
+      );
+
+  if (!match)
+    return dateString
+      .replace(/-/g, "");
+
+  let hour =
+    Number(match[1]);
+
+  const minute =
+    match[2];
+
+  const ampm =
+    (match[3] || "")
+      .toUpperCase();
+
+  if (
+    ampm === "PM" &&
+    hour < 12
+  )
+    hour += 12;
+
+  if (
+    ampm === "AM" &&
+    hour === 12
+  )
+    hour = 0;
+
+  return dateString
+    .replace(/-/g, "") +
+    "T" +
+    String(hour)
+      .padStart(2, "0") +
+    minute +
+    "00";
+
+}
+
+function foldICS(text) {
+
+  return String(text || "")
+    .replace(
+      /\r?\n/g,
+      " "
+    )
+    .replace(
+      /\\/g,
+      "\\\\"
+    )
+    .replace(
+      /;/g,
+      "\\;"
+    )
+    .replace(
+      /,/g,
+      "\\,"
+    );
+
+}
+
+$("exportBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      const lines = [
+
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//CSA Events//EN"
+
+      ];
+
+      events.forEach(e => {
+
+        lines.push(
+
+          "BEGIN:VEVENT",
+
+          "UID:csa-" +
+          e.id +
+          "@events",
+
+          "DTSTAMP:20260918T000000Z",
+
+          "DTSTART:" +
+          icsDate(
+            e.date,
+            e.time
+          ),
+
+          "SUMMARY:" +
+          foldICS(e.name),
+
+          "DESCRIPTION:" +
+          foldICS(
+            e.details +
+            "\nTag: " +
+            tagLabel(e.tag)
+          ),
+
+          "LOCATION:" +
+          foldICS(
+            e.location
+          ),
+
+          "END:VEVENT"
+
+        );
+
+      });
+
+      lines.push(
+        "END:VCALENDAR"
+      );
+
+      downloadFile(
+        "CSA-events.ics",
+        lines.join("\r\n"),
+        "text/calendar"
+      );
+
+    }
+  );
+
+/* ============================================
+   BACKUP / RESTORE
+   ============================================ */
+
+function downloadFile(
+  filename,
+  content,
+  type
+) {
+
+  const blob =
+    new Blob(
+      [content],
+      {type}
+    );
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+  const a =
+    document.createElement(
+      "a"
+    );
+
+  a.href = url;
+  a.download = filename;
+
+  a.click();
+
+  setTimeout(
+    () =>
+      URL.revokeObjectURL(
+        url
+      ),
+    1000
+  );
+
+}
+
+$("backupBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      downloadFile(
+
+        "CSA-events-backup.json",
+
+        JSON.stringify(
+          events,
+          null,
+          2
+        ),
+
+        "application/json"
+
+      );
+
+    }
+  );
+
+$("importBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      $("importFile").click();
+
+    }
+  );
+
+$("importFile")
+  .addEventListener(
+    "change",
+    event => {
+
+      const file =
+        event.target.files[0];
+
+      if (!file) return;
+
+      const reader =
+        new FileReader();
+
+      reader.onload = () => {
+
+        try {
+
+          const imported =
+            JSON.parse(
+              reader.result
+            );
+
+          if (
+            !Array.isArray(
+              imported
+            )
+          ) {
+
+            throw new Error(
+              "Invalid format"
+            );
+
+          }
+
+          const valid =
+            imported.every(
+              e =>
+                e.name &&
+                e.date &&
+                e.tag
+            );
+
+          if (!valid)
+            throw new Error(
+              "Invalid events"
+            );
+
+          if (
+            !confirm(
+              "Replace your current calendar with this backup?"
+            )
+          ) {
+
+            return;
+
+          }
+
+          events = imported;
+
+          nextId =
+            Math.max(
+              100,
+              ...events.map(
+                e =>
+                  Number(e.id) || 0
+              ) + 1
+            );
+
+          saveEvents();
+
+          render();
+
+          alert(
+            "Calendar backup imported successfully."
+          );
+
+        } catch (error) {
+
+          alert(
+            "Could not import this backup file."
+          );
+
+        }
+
+        event.target.value = "";
+
+      };
+
+      reader.readAsText(file);
+
+    }
+  );
+
+/* ============================================
+   START
+   ============================================ */
+
+render();
+
+</script>
+
+</body>
+</html>
