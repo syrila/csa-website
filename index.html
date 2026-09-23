@@ -1065,7 +1065,39 @@ h1 {
   </div>
 </div>
 
-<script>
+<script type="module">
+
+/* ============================================
+   FIREBASE
+   ============================================ */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getDocs,
+  writeBatch
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDS07CaGQPBi7OuNmO3qYr0jy8wBqStWv0",
+  authDomain: "csa-calendar-af10f.firebaseapp.com",
+  projectId: "csa-calendar-af10f",
+  storageBucket: "csa-calendar-af10f.firebasestorage.app",
+  messagingSenderId: "940021400013",
+  appId: "1:940021400013:web:061be84083dec92a0f0484"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 
 /* ============================================
    CSA EVENT WEBSITE
@@ -1075,23 +1107,6 @@ h1 {
 const COORDINATOR_PASSCODE = "CSAevents";
 const EBOARD_PASSCODE = "CSAeboard";
 
-const STORAGE_KEY = "csa_events_2026_2027";
-
-/*
-  Visibility:
-  
-  general = General Body + E-Board + Coordinator
-  eboard  = E-Board + Coordinator only
-  all     = Everyone
-*/
-
-/*
-  Access modes:
-  
-  general     = Public
-  eboard      = E-Board members
-  coordinator = Event Coordinator
-*/
 
 let mode = "general";
 
@@ -1099,11 +1114,16 @@ let coordinatorUnlocked = false;
 let eboardUnlocked = false;
 
 let editingId = null;
+let editingFirestoreId = null;
+
 let nextId = 100;
 
 let viewDate = new Date(2026, 8, 1);
 
 let loginType = "coordinator";
+
+let events = [];
+
 
 const $ = id => document.getElementById(id);
 
@@ -1121,6 +1141,7 @@ const monthNames = [
   "November",
   "December"
 ];
+
 
 /* ============================================
    STARTING EVENTS
@@ -1309,68 +1330,150 @@ const originalEvents = [
 
 ];
 
-let events = loadEvents();
 
 /* ============================================
-   LOAD / SAVE
+   FIRESTORE EVENTS
    ============================================ */
 
-function loadEvents() {
+function subscribeToEvents() {
 
-  try {
+  const eventsRef = collection(db, "events");
 
-    const saved =
-      localStorage.getItem(STORAGE_KEY);
+  onSnapshot(
+    eventsRef,
+    async snapshot => {
 
-    if (saved) {
+      /*
+        If the only document is our temporary
+        setup document, create the starter events.
+      */
 
-      const parsed = JSON.parse(saved);
+      const docs = snapshot.docs;
 
-      if (Array.isArray(parsed)) {
+      const onlySetup =
+        docs.length === 1 &&
+        docs[0].data().setup === true;
 
-        nextId =
-          Math.max(
-            100,
-            ...parsed.map(
-              e => Number(e.id) || 0
-            ) + 1
-          );
+      if (onlySetup) {
 
-        return parsed;
+        await seedStarterEvents(
+          docs[0].id
+        );
+
+        return;
       }
+
+      /*
+        If completely empty, create starter events.
+      */
+
+      if (docs.length === 0) {
+
+        await seedStarterEvents();
+
+        return;
+      }
+
+      events = docs.map(document => ({
+
+        firestoreId: document.id,
+
+        ...document.data()
+
+      }));
+
+      updateNextId();
+
+      render();
+
+    },
+
+    error => {
+
+      console.error(
+        "Firebase error:",
+        error
+      );
+
+      $("viewNotice").textContent =
+        "⚠️ Unable to load events from Firebase.";
+
     }
 
-  } catch (error) {
+  );
 
-    console.warn(
-      "Could not load events:",
-      error
-    );
-
-  }
-
-  return originalEvents.map(e => ({...e}));
 }
 
-function saveEvents() {
+
+async function seedStarterEvents(setupId = null) {
 
   try {
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(events)
-    );
+    const batch =
+      writeBatch(
+        db
+      );
+
+    originalEvents.forEach(event => {
+
+      const newDoc =
+        doc(
+          collection(
+            db,
+            "events"
+          )
+        );
+
+      batch.set(
+        newDoc,
+        event
+      );
+
+    });
+
+    if (setupId) {
+
+      batch.delete(
+        doc(
+          db,
+          "events",
+          setupId
+        )
+      );
+
+    }
+
+    await batch.commit();
 
   } catch (error) {
 
-    console.warn(
-      "Could not save events:",
+    console.error(
+      "Could not create starter events:",
       error
     );
 
   }
 
 }
+
+
+function updateNextId() {
+
+  const numbers =
+    events
+      .map(
+        e =>
+          Number(e.id) || 0
+      );
+
+  nextId =
+    Math.max(
+      100,
+      ...numbers
+    ) + 1;
+
+}
+
 
 /* ============================================
    HELPERS
@@ -1379,24 +1482,33 @@ function saveEvents() {
 function esc(value) {
 
   return String(value ?? "")
-    .replace(/[&<>"']/g, c => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[c]));
+    .replace(
+      /[&<>"']/g,
+      c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[c])
+    );
 
 }
+
 
 function parseDate(str) {
 
   const [y, m, d] =
     str.split("-").map(Number);
 
-  return new Date(y, m - 1, d);
+  return new Date(
+    y,
+    m - 1,
+    d
+  );
 
 }
+
 
 function formatDate(str) {
 
@@ -1412,6 +1524,7 @@ function formatDate(str) {
 
 }
 
+
 function formatDateParts(str) {
 
   const d = parseDate(str);
@@ -1424,7 +1537,8 @@ function formatDateParts(str) {
         {month: "short"}
       ),
 
-    day: d.getDate(),
+    day:
+      d.getDate(),
 
     weekday:
       d.toLocaleDateString(
@@ -1436,24 +1550,18 @@ function formatDateParts(str) {
 
 }
 
+
 /* ============================================
    EVENT VISIBILITY
    ============================================ */
 
 function visible(e) {
 
-  /* General members cannot see E-Board events */
-
   if (mode === "general") {
 
     return e.tag !== "eboard";
 
   }
-
-  /*
-    E-Board members and Coordinator
-    can see everything.
-  */
 
   if (
     mode === "eboard" ||
@@ -1468,6 +1576,7 @@ function visible(e) {
 
 }
 
+
 function sortedEvents() {
 
   return events
@@ -1479,6 +1588,7 @@ function sortedEvents() {
     );
 
 }
+
 
 function tagLabel(tag) {
 
@@ -1492,6 +1602,7 @@ function tagLabel(tag) {
 
 }
 
+
 function tagClass(tag) {
 
   return tag === "eboard"
@@ -1501,6 +1612,7 @@ function tagClass(tag) {
     : "none";
 
 }
+
 
 function categoryLabel(category) {
 
@@ -1520,13 +1632,15 @@ function categoryLabel(category) {
 
 }
 
+
 /* ============================================
    EVENT CARD
    ============================================ */
 
 function eventCard(e) {
 
-  const p = formatDateParts(e.date);
+  const p =
+    formatDateParts(e.date);
 
   return `
 
@@ -1592,13 +1706,15 @@ function eventCard(e) {
 
 }
 
+
 /* ============================================
    RENDER
    ============================================ */
 
 function render() {
 
-  const list = sortedEvents();
+  const list =
+    sortedEvents();
 
   $("statCount").textContent =
     list.length;
@@ -1606,17 +1722,26 @@ function render() {
   $("eventCountLabel").textContent =
     list.length + " EVENTS";
 
-  const now = new Date();
+  const now =
+    new Date();
 
-  now.setHours(0, 0, 0, 0);
+  now.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
   const next =
     list.find(
-      e => parseDate(e.date) >= now
+      e =>
+        parseDate(e.date) >= now
     ) || list[0];
 
   $("statNext").textContent =
-    next ? next.name : "—";
+    next
+      ? next.name
+      : "—";
 
   $("statNextDate").textContent =
     next
@@ -1692,15 +1817,14 @@ function render() {
         "click",
         () => {
 
-          openEditor(
+          const e =
             events.find(
-              e =>
-                e.id ===
-                Number(
-                  button.dataset.edit
-                )
-            )
-          );
+              event =>
+                Number(event.id) ===
+                Number(button.dataset.edit)
+            );
+
+          openEditor(e);
 
         }
       );
@@ -1710,6 +1834,7 @@ function render() {
   renderCalendar();
 
 }
+
 
 /* ============================================
    CALENDAR
@@ -1758,9 +1883,14 @@ function renderCalendar() {
 
   });
 
-  const today = new Date();
+  const today =
+    new Date();
 
-  for (let i = 0; i < 42; i++) {
+  for (
+    let i = 0;
+    i < 42;
+    i++
+  ) {
 
     const d =
       new Date(
@@ -1814,7 +1944,6 @@ function renderCalendar() {
             padding:0;
             cursor:pointer
           "
-          aria-label="${esc(formatDate(ds))}"
         >
 
           <span class="day-number">
@@ -1843,7 +1972,9 @@ function renderCalendar() {
 
       });
 
-    if (dayEvents.length > 3) {
+    if (
+      dayEvents.length > 3
+    ) {
 
       html += `
 
@@ -1859,7 +1990,8 @@ function renderCalendar() {
 
   }
 
-  $("calendar").innerHTML = html;
+  $("calendar").innerHTML =
+    html;
 
   $("calendar")
     .querySelectorAll("[data-date]")
@@ -1898,14 +2030,17 @@ function renderCalendar() {
           const e =
             events.find(
               x =>
-                x.id ===
+                Number(x.id) ===
                 Number(
                   button.dataset
                     .calendarEvent
                 )
             );
 
-          if (coordinatorUnlocked) {
+          if (
+            coordinatorUnlocked &&
+            e
+          ) {
 
             openEditor(e);
 
@@ -1921,6 +2056,7 @@ function renderCalendar() {
     });
 
 }
+
 
 /* ============================================
    EVENT DETAILS
@@ -1954,32 +2090,26 @@ function showEventDetails(e) {
 
 }
 
+
 /* ============================================
    VIEW SWITCHING
    ============================================ */
 
 function switchView(newMode) {
 
-  /*
-    Coordinator requires coordinator password.
-  */
-
   if (
     newMode === "coordinator" &&
     !coordinatorUnlocked
   ) {
 
-    loginType = "coordinator";
+    loginType =
+      "coordinator";
 
     showLoginPanel();
 
     return;
 
   }
-
-  /*
-    E-Board requires E-Board password.
-  */
 
   if (
     newMode === "eboard" &&
@@ -1987,7 +2117,8 @@ function switchView(newMode) {
     !coordinatorUnlocked
   ) {
 
-    loginType = "eboard";
+    loginType =
+      "eboard";
 
     showLoginPanel();
 
@@ -1995,7 +2126,8 @@ function switchView(newMode) {
 
   }
 
-  mode = newMode;
+  mode =
+    newMode;
 
   $("loginPanel")
     .classList.add("hidden");
@@ -2009,7 +2141,8 @@ function switchView(newMode) {
 
       button.classList.toggle(
         "active",
-        button.dataset.view === newMode
+        button.dataset.view ===
+        newMode
       );
 
     });
@@ -2018,8 +2151,9 @@ function switchView(newMode) {
 
 }
 
+
 /* ============================================
-   SHOW LOGIN PANEL
+   LOGIN PANEL
    ============================================ */
 
 function showLoginPanel() {
@@ -2032,43 +2166,49 @@ function showLoginPanel() {
 
   $("password").value = "";
 
-  $("loginMessage").textContent = "";
+  $("loginMessage")
+    .textContent = "";
 
-  if (loginType === "eboard") {
+  if (
+    loginType === "eboard"
+  ) {
 
-    $("loginIcon").textContent = "🔒";
+    $("loginIcon")
+      .textContent = "🔒";
 
-    $("loginTitle").textContent =
+    $("loginTitle")
+      .textContent =
       "E-Board Access";
 
-    $("loginDescription").textContent =
+    $("loginDescription")
+      .textContent =
       "Enter the E-Board passcode to view private CSA planning and events.";
 
-    $("loginSubmit").textContent =
+    $("loginSubmit")
+      .textContent =
       "Unlock E-Board View";
-
-    $("viewNotice").textContent =
-      "🔒 E-Board access · Enter the E-Board passcode to continue.";
 
   } else {
 
-    $("loginIcon").textContent = "🔐";
+    $("loginIcon")
+      .textContent = "🔐";
 
-    $("loginTitle").textContent =
+    $("loginTitle")
+      .textContent =
       "Event Coordinator Access";
 
-    $("loginDescription").textContent =
+    $("loginDescription")
+      .textContent =
       "Enter the coordinator passcode to unlock event management.";
 
-    $("loginSubmit").textContent =
+    $("loginSubmit")
+      .textContent =
       "Unlock Edit Mode";
-
-    $("viewNotice").textContent =
-      "🔑 Coordinator access · Enter your passcode to unlock editing.";
 
   }
 
 }
+
 
 /* ============================================
    VIEW TAB BUTTONS
@@ -2091,6 +2231,7 @@ document
 
   });
 
+
 /* ============================================
    HERO BUTTONS
    ============================================ */
@@ -2109,25 +2250,32 @@ $("heroCalendar")
     }
   );
 
+
 $("heroLogin")
   .addEventListener(
     "click",
     () => {
 
-      switchView("coordinator");
+      switchView(
+        "coordinator"
+      );
 
     }
   );
+
 
 $("loginBtn")
   .addEventListener(
     "click",
     () => {
 
-      switchView("coordinator");
+      switchView(
+        "coordinator"
+      );
 
     }
   );
+
 
 /* ============================================
    LOGIN
@@ -2143,9 +2291,7 @@ $("loginForm")
       const entered =
         $("password").value;
 
-      /*
-        E-BOARD LOGIN
-      */
+      /* E-BOARD LOGIN */
 
       if (
         loginType === "eboard" &&
@@ -2153,7 +2299,9 @@ $("loginForm")
       ) {
 
         eboardUnlocked = true;
-        mode = "eboard";
+
+        mode =
+          "eboard";
 
         $("password").value = "";
 
@@ -2181,22 +2329,25 @@ $("loginForm")
 
       }
 
-      /*
-        COORDINATOR LOGIN
-      */
+
+      /* COORDINATOR LOGIN */
 
       if (
         loginType === "coordinator" &&
-        entered === COORDINATOR_PASSCODE
+        entered ===
+        COORDINATOR_PASSCODE
       ) {
 
-        coordinatorUnlocked = true;
+        coordinatorUnlocked =
+          true;
 
-        mode = "coordinator";
+        mode =
+          "coordinator";
 
         $("password").value = "";
 
-        $("loginMessage").textContent = "";
+        $("loginMessage")
+          .textContent = "";
 
         $("loginPanel")
           .classList.add("hidden");
@@ -2222,11 +2373,13 @@ $("loginForm")
 
       }
 
-      $("loginMessage").textContent =
+      $("loginMessage")
+        .textContent =
         "Incorrect passcode. Please try again.";
 
     }
   );
+
 
 /* ============================================
    LOGOUT / LOCK
@@ -2237,14 +2390,21 @@ $("logoutBtn")
     "click",
     () => {
 
-      coordinatorUnlocked = false;
-      eboardUnlocked = false;
+      coordinatorUnlocked =
+        false;
+
+      eboardUnlocked =
+        false;
 
       editingId = null;
 
+      editingFirestoreId =
+        null;
+
       closeEditor();
 
-      mode = "general";
+      mode =
+        "general";
 
       document
         .querySelectorAll("[data-view]")
@@ -2269,6 +2429,7 @@ $("logoutBtn")
     }
   );
 
+
 /* ============================================
    CALENDAR NAVIGATION
    ============================================ */
@@ -2290,6 +2451,7 @@ $("prevMonth")
     }
   );
 
+
 $("nextMonth")
   .addEventListener(
     "click",
@@ -2307,6 +2469,7 @@ $("nextMonth")
     }
   );
 
+
 /* ============================================
    EVENT EDITOR
    ============================================ */
@@ -2320,10 +2483,16 @@ function openEditor(
     return;
 
   editingId =
-    e ? e.id : null;
+    e ? Number(e.id) : null;
 
-  $("modalTitle").textContent =
-    e ? "Edit Event" : "Add Event";
+  editingFirestoreId =
+    e ? e.firestoreId : null;
+
+  $("modalTitle")
+    .textContent =
+    e
+      ? "Edit Event"
+      : "Add Event";
 
   $("eventName").value =
     e ? e.name : "";
@@ -2332,7 +2501,9 @@ function openEditor(
     e
       ? e.date
       : selectedDate ||
-        formatInputDate(viewDate);
+        formatInputDate(
+          viewDate
+        );
 
   $("eventTime").value =
     e ? e.time : "";
@@ -2355,16 +2526,20 @@ function openEditor(
       !e
     );
 
-  $("formMessage").textContent = "";
+  $("formMessage")
+    .textContent = "";
 
   updateVisibilityExplanation();
 
   $("eventModal")
-    .classList.remove("hidden");
+    .classList.remove(
+      "hidden"
+    );
 
   $("eventName").focus();
 
 }
+
 
 function formatInputDate(d) {
 
@@ -2380,14 +2555,21 @@ function formatInputDate(d) {
 
 }
 
+
 function closeEditor() {
 
   $("eventModal")
-    .classList.add("hidden");
+    .classList.add(
+      "hidden"
+    );
 
   editingId = null;
 
+  editingFirestoreId =
+    null;
+
 }
+
 
 $("addEventBtn")
   .addEventListener(
@@ -2396,11 +2578,14 @@ $("addEventBtn")
 
       openEditor(
         null,
-        formatInputDate(viewDate)
+        formatInputDate(
+          viewDate
+        )
       );
 
     }
   );
+
 
 $("addTopBtn")
   .addEventListener(
@@ -2409,11 +2594,14 @@ $("addTopBtn")
 
       openEditor(
         null,
-        formatInputDate(viewDate)
+        formatInputDate(
+          viewDate
+        )
       );
 
     }
   );
+
 
 $("closeModal")
   .addEventListener(
@@ -2421,17 +2609,20 @@ $("closeModal")
     closeEditor
   );
 
+
 $("cancelModal")
   .addEventListener(
     "click",
     closeEditor
   );
 
+
 $("eventTag")
   .addEventListener(
     "change",
     updateVisibilityExplanation
   );
+
 
 function updateVisibilityExplanation() {
 
@@ -2453,14 +2644,15 @@ function updateVisibilityExplanation() {
 
 }
 
+
 /* ============================================
-   SAVE EVENT
+   SAVE EVENT TO FIREBASE
    ============================================ */
 
 $("eventForm")
   .addEventListener(
     "submit",
-    event => {
+    async event => {
 
       event.preventDefault();
 
@@ -2508,54 +2700,75 @@ $("eventForm")
       if (
         !data.name ||
         !data.date
-      ) return;
+      )
+        return;
 
-      if (editingId === null) {
+      try {
 
-        data.id =
-          nextId++;
+        $("formMessage")
+          .textContent =
+          "Saving...";
 
-        events.push(data);
+        if (
+          editingId === null
+        ) {
 
-      } else {
+          data.id =
+            nextId++;
 
-        const index =
-          events.findIndex(
-            e =>
-              e.id === editingId
+          await addDoc(
+            collection(
+              db,
+              "events"
+            ),
+            data
           );
 
-        if (index !== -1) {
+        } else {
 
-          events[index] = {
+          await updateDoc(
 
-            id: editingId,
-            ...data
+            doc(
+              db,
+              "events",
+              editingFirestoreId
+            ),
 
-          };
+            data
+
+          );
 
         }
 
-      }
+        const d =
+          parseDate(
+            data.date
+          );
 
-      saveEvents();
+        viewDate =
+          new Date(
+            d.getFullYear(),
+            d.getMonth(),
+            1
+          );
 
-      const d =
-        parseDate(data.date);
+        closeEditor();
 
-      viewDate =
-        new Date(
-          d.getFullYear(),
-          d.getMonth(),
-          1
+      } catch (error) {
+
+        console.error(
+          error
         );
 
-      closeEditor();
+        $("formMessage")
+          .textContent =
+          "Could not save the event. Check your Firebase settings.";
 
-      render();
+      }
 
     }
   );
+
 
 /* ============================================
    DELETE EVENT
@@ -2564,20 +2777,23 @@ $("eventForm")
 $("deleteEvent")
   .addEventListener(
     "click",
-    () => {
+    async () => {
 
       if (
         editingId === null ||
         !coordinatorUnlocked
-      ) return;
+      )
+        return;
 
       const event =
         events.find(
           e =>
-            e.id === editingId
+            Number(e.id) ===
+            Number(editingId)
         );
 
-      if (!event) return;
+      if (!event)
+        return;
 
       if (
         !confirm(
@@ -2585,22 +2801,38 @@ $("deleteEvent")
           event.name +
           "?"
         )
-      ) return;
+      )
+        return;
 
-      events =
-        events.filter(
-          e =>
-            e.id !== editingId
+      try {
+
+        await deleteDoc(
+
+          doc(
+            db,
+            "events",
+            event.firestoreId
+          )
+
         );
 
-      saveEvents();
+        closeEditor();
 
-      closeEditor();
+      } catch (error) {
 
-      render();
+        console.error(
+          error
+        );
+
+        alert(
+          "Could not delete this event."
+        );
+
+      }
 
     }
   );
+
 
 /* ============================================
    EXPORT CALENDAR
@@ -2653,6 +2885,7 @@ function icsDate(
 
 }
 
+
 function foldICS(text) {
 
   return String(text || "")
@@ -2674,6 +2907,7 @@ function foldICS(text) {
     );
 
 }
+
 
 $("exportBtn")
   .addEventListener(
@@ -2740,8 +2974,9 @@ $("exportBtn")
     }
   );
 
+
 /* ============================================
-   BACKUP / RESTORE
+   BACKUP
    ============================================ */
 
 function downloadFile(
@@ -2767,7 +3002,9 @@ function downloadFile(
     );
 
   a.href = url;
-  a.download = filename;
+
+  a.download =
+    filename;
 
   a.click();
 
@@ -2780,6 +3017,7 @@ function downloadFile(
   );
 
 }
+
 
 $("backupBtn")
   .addEventListener(
@@ -2803,15 +3041,22 @@ $("backupBtn")
     }
   );
 
+
+/* ============================================
+   IMPORT BACKUP
+   ============================================ */
+
 $("importBtn")
   .addEventListener(
     "click",
     () => {
 
-      $("importFile").click();
+      $("importFile")
+        .click();
 
     }
   );
+
 
 $("importFile")
   .addEventListener(
@@ -2821,96 +3066,128 @@ $("importFile")
       const file =
         event.target.files[0];
 
-      if (!file) return;
+      if (!file)
+        return;
 
       const reader =
         new FileReader();
 
-      reader.onload = () => {
+      reader.onload =
+        async () => {
 
-        try {
+          try {
 
-          const imported =
-            JSON.parse(
-              reader.result
-            );
+            const imported =
+              JSON.parse(
+                reader.result
+              );
 
-          if (
-            !Array.isArray(
-              imported
+            if (
+              !Array.isArray(
+                imported
+              )
             )
-          ) {
+              throw new Error();
 
-            throw new Error(
-              "Invalid format"
-            );
-
-          }
-
-          const valid =
-            imported.every(
-              e =>
-                e.name &&
-                e.date &&
-                e.tag
-            );
-
-          if (!valid)
-            throw new Error(
-              "Invalid events"
-            );
-
-          if (
-            !confirm(
-              "Replace your current calendar with this backup?"
-            )
-          ) {
-
-            return;
-
-          }
-
-          events = imported;
-
-          nextId =
-            Math.max(
-              100,
-              ...events.map(
+            const valid =
+              imported.every(
                 e =>
-                  Number(e.id) || 0
-              ) + 1
+                  e.name &&
+                  e.date &&
+                  e.tag
+              );
+
+            if (!valid)
+              throw new Error();
+
+            if (
+              !confirm(
+                "Replace your current calendar with this backup?"
+              )
+            )
+              return;
+
+            const snapshot =
+              await getDocs(
+                collection(
+                  db,
+                  "events"
+                )
+              );
+
+            const batch =
+              writeBatch(
+                db
+              );
+
+            snapshot.forEach(
+              document => {
+
+                batch.delete(
+                  document.ref
+                );
+
+              }
             );
 
-          saveEvents();
+            imported.forEach(
+              eventData => {
 
-          render();
+                const newDoc =
+                  doc(
+                    collection(
+                      db,
+                      "events"
+                    )
+                  );
 
-          alert(
-            "Calendar backup imported successfully."
-          );
+                batch.set(
+                  newDoc,
+                  {
+                    ...eventData,
+                    id:
+                      Number(
+                        eventData.id
+                      ) || Date.now()
+                  }
+                );
 
-        } catch (error) {
+              }
+            );
 
-          alert(
-            "Could not import this backup file."
-          );
+            await batch.commit();
 
-        }
+            alert(
+              "Calendar backup imported successfully."
+            );
 
-        event.target.value = "";
+          } catch (error) {
 
-      };
+            console.error(
+              error
+            );
+
+            alert(
+              "Could not import this backup file."
+            );
+
+          }
+
+          event.target.value = "";
+
+        };
 
       reader.readAsText(file);
 
     }
   );
 
+
 /* ============================================
    START
    ============================================ */
 
-render();
+subscribeToEvents();
 
 </script>
 
